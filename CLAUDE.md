@@ -1,39 +1,46 @@
-# CLAUDE.md — vn-trading-analyst
+# CLAUDE.md — Auto-Setup Instructions
 
-Khi user mở repo này trong Claude Code, hãy **tự động chạy setup** theo hướng dẫn bên dưới — không cần user gõ thêm lệnh nào.
+> **Đây là file hướng dẫn cho Claude (cả Claude Code CLI và Claude Desktop).** Khi user clone repo này và nói **"cài cho tôi"**, **"setup"**, **"install"**, hoặc đơn giản là mở repo → bạn (Claude) PHẢI tự động chạy toàn bộ quy trình cài đặt bên dưới. Không hỏi gì cả nếu không cần.
 
 ---
 
 ## Mô tả repo
 
-Bộ skills phân tích chứng khoán Việt Nam cho Claude Code:
-- **TradingView MCP** — chart kỹ thuật, giá realtime, vẽ trendline, tạo alert
+Bộ skills phân tích chứng khoán Việt Nam:
+- **TradingView MCP** — chart, giá realtime, indicator, vẽ trendline, alert
 - **vnstock MCP** — BCTC, P/E, ROE, bảng giá VN30, tin tức
 - **5 skills**: `/vn-analyze`, `/vn-technical`, `/vn-fundamental`, `/vn-market`, `/vn-report`
 
+## Hoạt động ở đâu
+
+| Platform | MCP | Skills `/vn-*` | Cách dùng |
+|----------|-----|----------------|-----------|
+| Claude Code CLI | ✅ `.mcp.json` tự load | ✅ Từ `~/.claude/skills/` | `cd <repo> && claude` |
+| Claude Desktop | ✅ `claude_desktop_config.json` | ✅ Từ `~/.claude/skills/` (mới) | Mở app sau khi setup |
+
+Setup này configure cho **cả hai** — user chọn dùng nào cũng được.
+
 ---
 
-## Auto-Setup Protocol
+# ⚙️ AUTO-SETUP PROTOCOL
 
-Khi user nói "cài đặt", "setup", "giúp tôi cài", hoặc mở repo lần đầu, hãy thực hiện theo thứ tự:
+**Khi user nói "cài"/"setup"/"install"** → chạy lần lượt 8 bước. KHÔNG dừng lại hỏi user trừ khi gặp lỗi không tự fix được.
 
-### Bước 1 — Phát hiện OS
+## Bước 1 — Detect OS
 
-```bash
-# Detect OS
-uname -s 2>/dev/null || echo "Windows"
+```
+Windows  → dùng tool `PowerShell`
+macOS    → dùng tool `Bash`, command `python3` thay `python`
+Linux    → dùng tool `Bash`
 ```
 
-- **Windows**: dùng PowerShell (`PowerShell` tool)
-- **macOS/Linux**: dùng Bash (`Bash` tool)
+## Bước 2 — Verify prerequisites
 
-### Bước 2 — Kiểm tra prerequisites
+Chạy 1 lệnh kiểm tra Python + Node + Git:
 
 **Windows:**
 ```powershell
-python --version
-node --version
-git --version
+python --version; node --version; git --version
 ```
 
 **macOS/Linux:**
@@ -41,157 +48,180 @@ git --version
 python3 --version && node --version && git --version
 ```
 
-Nếu thiếu tool nào → báo user tải về:
-- Python: https://python.org/downloads (Windows: tick "Add Python to PATH")
-- Node.js: https://nodejs.org (chọn LTS)
+Nếu thiếu → DỪNG và báo user link tải. KHÔNG tự cài Python/Node/Git.
+- Python ≥3.8: https://python.org/downloads (Windows: **tick "Add Python to PATH"**)
+- Node ≥18 LTS: https://nodejs.org
 - Git: https://git-scm.com/downloads
 
-### Bước 3 — Cài vnstock-agent
+## Bước 3 — Install vnstock-agent
+
+**Lệnh ĐÚNG (package KHÔNG có trên PyPI, phải cài từ GitHub):**
 
 ```bash
-pip install git+https://github.com/mrgoonie/vnstock-agent.git
+pip install --user git+https://github.com/mrgoonie/vnstock-agent.git
 ```
 
-Kiểm tra: `vnstock-mcp --help`
+> ⚠️ **KHÔNG dùng** `pip install vnstock-agent` — package không tồn tại trên PyPI.
 
-### Bước 4 — Clone & cài tradingview-mcp
+Verify: `vnstock-mcp --help` phải hiện help text.
+
+Nếu `vnstock-mcp` không có trong PATH sau khi cài → user cần thêm `~/.local/bin` (Linux/Mac) hoặc `%APPDATA%\Python\Python3xx\Scripts` (Windows) vào PATH. Báo user và tiếp tục.
+
+## Bước 4 — Setup tradingview-mcp
 
 **Windows:**
 ```powershell
-if (-not (Test-Path "$HOME\tradingview-mcp")) {
+if (-not (Test-Path "$HOME\tradingview-mcp\src\server.js")) {
     git clone https://github.com/tradesdontlie/tradingview-mcp.git "$HOME\tradingview-mcp"
-    cd "$HOME\tradingview-mcp" && npm install
+    Push-Location "$HOME\tradingview-mcp"; npm install; Pop-Location
 }
 ```
 
 **macOS/Linux:**
 ```bash
-if [ ! -d ~/tradingview-mcp ]; then
+if [ ! -f ~/tradingview-mcp/src/server.js ]; then
     git clone https://github.com/tradesdontlie/tradingview-mcp.git ~/tradingview-mcp
-    cd ~/tradingview-mcp && npm install
+    (cd ~/tradingview-mcp && npm install)
 fi
 ```
 
-### Bước 5 — Copy skills vào Claude Code
+Verify: file `~/tradingview-mcp/src/server.js` tồn tại.
+
+## Bước 5 — Copy skills vào `~/.claude/skills/`
+
+Skills phải nằm ở **global path** để cả Claude Code CLI và Claude Desktop đều thấy.
 
 **Windows:**
 ```powershell
-New-Item -ItemType Directory -Force -Path "$HOME\.claude\skills"
-Copy-Item -Recurse -Force ".claude\skills\*" "$HOME\.claude\skills\"
+New-Item -ItemType Directory -Force -Path "$HOME\.claude\skills" | Out-Null
+Copy-Item -Recurse -Force "<REPO_ROOT>\.claude\skills\*" "$HOME\.claude\skills\"
 ```
+
+Trong đó `<REPO_ROOT>` là thư mục repo (lấy bằng `git rev-parse --show-toplevel` hoặc dùng `$PWD` nếu user đang cd trong repo).
 
 **macOS/Linux:**
 ```bash
 mkdir -p ~/.claude/skills
-cp -r .claude/skills/* ~/.claude/skills/
+cp -r "$REPO_ROOT/.claude/skills/"* ~/.claude/skills/
 ```
 
-Xác nhận: `ls "$HOME\.claude\skills"` phải thấy 5 thư mục: `vn-analyze vn-technical vn-fundamental vn-market vn-report`
+Verify: `ls ~/.claude/skills/` phải thấy 5 thư mục `vn-analyze vn-technical vn-fundamental vn-market vn-report`.
 
-### Bước 6 — Cấu hình MCP
+## Bước 6 — Cấu hình Claude Desktop config
 
-> **Note:** Repo này đã có sẵn `.mcp.json` ở root → Claude Code CLI tự load MCP khi user `cd` vào repo và chạy `claude`. Bước này CHỈ cần làm nếu user muốn dùng Claude Desktop app.
+> Repo đã có `.mcp.json` cho Claude Code CLI tự load. Bước này thêm config cho **Claude Desktop**.
 
-Lấy username:
-- Windows: `$env:USERNAME`
-- macOS/Linux: `whoami`
+Path:
+- Windows: `$env:APPDATA\Claude\claude_desktop_config.json`
+- macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
 
-**Tạo/cập nhật claude_desktop_config.json:**
+**Logic xử lý:**
+1. Nếu file CHƯA tồn tại → tạo mới với content bên dưới.
+2. Nếu file ĐÃ tồn tại → đọc JSON, MERGE 2 entry `tradingview` + `vnstock` vào `mcpServers` (KHÔNG ghi đè entries cũ). Backup file gốc thành `.bak` trước khi sửa.
 
-Windows config path: `$env:APPDATA\Claude\claude_desktop_config.json`
-macOS config path: `~/Library/Application Support/Claude/claude_desktop_config.json`
-
-Nội dung cần thêm vào `mcpServers`:
+**Entries cần thêm (lấy username từ `$env:USERNAME` Windows / `whoami` Mac):**
 
 ```json
 "tradingview": {
   "command": "node",
-  "args": ["<ĐƯỜNG_DẪN_ĐẾN_tradingview-mcp>/src/server.js"]
+  "args": ["<HOME>/tradingview-mcp/src/server.js"]
 },
 "vnstock": {
-  "command": "vnstock-mcp",
-  "env": {
-    "VNSTOCK_API_KEY": "your_api_key_here"
-  }
+  "command": "vnstock-mcp"
 }
 ```
 
-Thay `<ĐƯỜNG_DẪN_ĐẾN_tradingview-mcp>`:
-- Windows: `C:\Users\<username>\tradingview-mcp`
-- macOS: `/Users/<username>/tradingview-mcp`
+Với `<HOME>`:
+- Windows: `C:\\Users\\<username>` (escape backslash)
+- macOS: `/Users/<username>`
 
-> Nếu user chưa có API key → xóa dòng `VNSTOCK_API_KEY` — vnstock vẫn chạy ở Guest mode (20 req/phút).
-
-> Nếu file config đã có nội dung khác → chỉ **thêm** 2 entry trên vào `mcpServers`, không ghi đè toàn bộ file.
-
-### Bước 7 — Hướng dẫn khởi động TradingView
-
-Sau khi setup xong, nhắc user:
-
-**Windows (bản Microsoft Store):**
-```
-1. Mở PowerShell as Administrator
-2. Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
-3. & "C:\Users\<username>\vn-trading-analyst\scripts\launch-tv-msix.ps1"
-4. Đợi thấy: "CDP ready at http://localhost:9222"
+**PowerShell mẫu (Windows):**
+```powershell
+$cfg = "$env:APPDATA\Claude\claude_desktop_config.json"
+if (Test-Path $cfg) { Copy-Item $cfg "$cfg.bak" -Force }
+$json = if (Test-Path $cfg) { Get-Content $cfg -Raw | ConvertFrom-Json } else { [PSCustomObject]@{ mcpServers = [PSCustomObject]@{} } }
+if (-not $json.mcpServers) { $json | Add-Member -Name mcpServers -Value ([PSCustomObject]@{}) -MemberType NoteProperty }
+$tvPath = "$HOME\tradingview-mcp\src\server.js"
+$json.mcpServers | Add-Member -Name "tradingview" -Value ([PSCustomObject]@{command="node"; args=@($tvPath)}) -MemberType NoteProperty -Force
+$json.mcpServers | Add-Member -Name "vnstock" -Value ([PSCustomObject]@{command="vnstock-mcp"}) -MemberType NoteProperty -Force
+$json | ConvertTo-Json -Depth 10 | Set-Content $cfg -Encoding UTF8
 ```
 
-**Windows (bản .exe):**
-```
-Chạy: scripts\launch_tv_debug.bat
+## Bước 7 — Hướng dẫn user khởi động TradingView (KHÔNG tự chạy)
+
+Đây là bước user PHẢI tự làm vì cần PowerShell Admin và app GUI. Báo user theo OS:
+
+**Windows (Microsoft Store):**
+```powershell
+# Mở PowerShell as ADMINISTRATOR (chuột phải → Run as Administrator)
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+& "<REPO_ROOT>\scripts\launch-tv-msix.ps1"
+# Đợi đến khi thấy: "CDP ready at http://localhost:9222"
 ```
 
-**macOS/Linux:**
+**Windows (TradingView .exe thường):**
 ```
-~/tradingview-mcp/scripts/launch_tv_debug_mac.sh
+<REPO_ROOT>\scripts\launch_tv_debug.bat
 ```
 
-### Bước 8 — Restart Claude Desktop
-
-Nhắc user: **Tắt hoàn toàn Claude Desktop** (kể cả icon dưới system tray) rồi mở lại.
-
-### Bước 9 — Kiểm tra
-
-Sau khi user mở lại Claude Desktop và quay lại chat:
+**macOS:**
+```bash
+open -a "TradingView" --args --remote-debugging-port=9222
 ```
-Kiểm tra kết nối: tv_health_check
-```
-→ Thành công nếu `"cdp_connected": true`
+
+## Bước 8 — Báo user "restart Claude" + cách test
+
+Sau khi cài xong, báo user:
+
+1. **Restart Claude** (tắt hoàn toàn rồi mở lại):
+   - Claude Desktop: tắt cả icon dưới system tray
+   - Claude Code CLI: thoát terminal, mở lại
+2. **Test commands:**
+   - Trong Claude Code CLI (sau khi `cd <repo> && claude`): `/vn-market`
+   - Trong Claude Desktop: gõ "kiểm tra kết nối tradingview" hoặc `tv_health_check`
+3. Nếu thấy `"cdp_connected": true` → mọi thứ hoạt động.
 
 ---
 
-## Lệnh hay dùng
+## ✅ Verification Checklist (chạy cuối cùng để báo cáo)
 
-| Lệnh | Tác dụng |
-|------|----------|
-| `/vn-analyze VCB` | Phân tích toàn diện, Trade Score 0-100 |
-| `/vn-technical VCB` | Kỹ thuật nhanh qua TradingView |
-| `/vn-fundamental VCB` | Cơ bản sâu qua vnstock |
-| `/vn-market` | Tổng quan VN-Index, VN30 |
-| `/vn-report VCB` | Xuất báo cáo HTML |
+Sau khi xong setup, tự verify và báo user dạng bảng:
+
+| Mục | Cách check | Kết quả mong đợi |
+|-----|-----------|------------------|
+| Python | `python --version` | 3.8+ |
+| Node | `node --version` | v18+ |
+| vnstock-mcp | `vnstock-mcp --help` | help text |
+| tradingview-mcp | `Test-Path "$HOME\tradingview-mcp\src\server.js"` | True |
+| Skills | `ls ~/.claude/skills/vn-*` | 5 thư mục |
+| `.mcp.json` repo | `Test-Path "<REPO>\.mcp.json"` | True |
+| Claude Desktop config | có entry `tradingview` + `vnstock` | OK |
 
 ---
 
-## Troubleshooting nhanh
+## Troubleshooting
 
-| Lỗi | Cách xử lý |
-|-----|-----------|
-| `tv_health_check` fail | TradingView chưa chạy với debug port — chạy lại Bước 7 |
-| Skills không thấy trong Claude | Chưa restart Claude Desktop — tắt hẳn rồi mở lại |
-| `vnstock-mcp: command not found` | Đổi config: `"command": "python", "args": ["-m", "vnstock_agent.mcp"]` |
-| Execution policy error (Windows) | `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass` |
-| vnstocks.com OAuth lỗi | Xóa dòng `VNSTOCK_API_KEY` trong config — dùng Guest mode |
-| Script .ps1 không tìm thấy TV | Đảm bảo TradingView cài từ Microsoft Store, chạy PowerShell as Admin |
+| Lỗi | Fix |
+|-----|-----|
+| `vnstock-agent: not found on PyPI` | Dùng `pip install git+https://github.com/mrgoonie/vnstock-agent.git` |
+| `vnstock-mcp: command not found` sau khi pip install | Thêm Scripts folder vào PATH, hoặc đổi config thành `"command":"python","args":["-m","vnstock_agent.mcp"]` |
+| `tv_health_check` fail / fetch failed | TradingView chưa chạy với debug port — chạy lại Bước 7 |
+| Skills không xuất hiện | Restart Claude hoàn toàn (cả tray icon) |
+| MCP không load trong Claude Code CLI | `cd` vào đúng thư mục repo trước khi gõ `claude` |
+| Execution policy error | `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass` trước khi chạy script |
+| MSIX TradingView không tìm thấy | Chạy `launch-tv-msix.ps1` từ PowerShell **Admin** |
+| `pip install` denied bởi sandbox | Báo user chạy thủ công lệnh `pip install --user git+https://github.com/mrgoonie/vnstock-agent.git` ngoài Claude |
 
 ---
 
 ## Cấu trúc repo
 
 ```
-vn-trading-analyst/
-├── CLAUDE.md                    ← file này
-├── README.md                    ← hướng dẫn đầy đủ cho người dùng
-├── .claude/skills/              ← 5 skills phân tích
+vn-stock-ai-trading/
+├── CLAUDE.md                    ← bạn đang đọc — auto-install instructions
+├── README.md                    ← hướng dẫn cho human
+├── .mcp.json                    ← MCP config cho Claude Code CLI (auto-loaded)
+├── .claude/skills/              ← 5 skills /vn-*
 │   ├── vn-analyze/
 │   ├── vn-technical/
 │   ├── vn-fundamental/
@@ -200,8 +230,8 @@ vn-trading-analyst/
 ├── config/
 │   └── claude-desktop-config-template.json
 └── scripts/
-    ├── setup-mcps.ps1           ← setup tự động Windows
-    ├── setup-mcps.sh            ← setup tự động macOS/Linux
-    ├── launch-tv-msix.ps1       ← khởi động TV bản Store (Windows Admin)
-    └── launch_tv_debug.bat      ← khởi động TV bản .exe (Windows)
+    ├── setup-mcps.ps1           ← Windows installer
+    ├── setup-mcps.sh            ← macOS/Linux installer
+    ├── launch-tv-msix.ps1       ← TradingView Store launcher (Admin)
+    └── launch_tv_debug.bat      ← TradingView .exe launcher
 ```
