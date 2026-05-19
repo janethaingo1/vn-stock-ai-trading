@@ -143,7 +143,7 @@ npm install
 ```
 
 Sau khi xong, thư mục sẽ nằm tại:
-- Windows: `C:\Users\<TÊN_BẠN>\tradingview-mcp`
+- Windows: `C:\Users\<YOUR_USERNAME>\tradingview-mcp`
 - macOS/Linux: `~/tradingview-mcp`
 
 ---
@@ -154,7 +154,7 @@ Sau khi xong, thư mục sẽ nằm tại:
 
 1. Mở File Explorer → paste vào thanh địa chỉ: `%APPDATA%\Claude` → Enter
 2. Mở file `claude_desktop_config.json` bằng Notepad (tạo mới nếu chưa có)
-3. Paste nội dung sau, **thay `<TÊN_BẠN>`** bằng username Windows của bạn:
+3. Paste nội dung sau, **thay `<YOUR_USERNAME>`** bằng username Windows của bạn:
 
 ```json
 {
@@ -162,7 +162,7 @@ Sau khi xong, thư mục sẽ nằm tại:
     "tradingview": {
       "command": "node",
       "args": [
-        "C:\\Users\\<TÊN_BẠN>\\tradingview-mcp\\src\\server.js"
+        "C:\\Users\\<YOUR_USERNAME>\\tradingview-mcp\\src\\server.js"
       ]
     },
     "vnstock": {
@@ -185,7 +185,7 @@ File config nằm tại: `~/Library/Application Support/Claude/claude_desktop_co
 
 Thay đường dẫn args thành:
 ```json
-"args": ["/Users/<TÊN_BẠN>/tradingview-mcp/src/server.js"]
+"args": ["/Users/<YOUR_USERNAME>/tradingview-mcp/src/server.js"]
 ```
 
 ---
@@ -195,7 +195,7 @@ Thay đường dẫn args thành:
 Clone repo này về máy (nếu chưa có):
 
 ```powershell
-git clone https://github.com/andyluu98/vn-trading-analyst.git
+git clone https://github.com/<YOUR_USERNAME>/vn-trading-analyst.git
 cd vn-trading-analyst
 ```
 
@@ -216,6 +216,8 @@ mkdir -p ~/.claude/skills
 cp -r .claude/skills/* ~/.claude/skills/
 ```
 
+> ✅ Sau khi copy xong, **tắt hoàn toàn Claude Desktop** (kể cả icon dưới taskbar) rồi **mở lại** để skills có hiệu lực.
+
 Kiểm tra:
 ```powershell
 ls "$HOME\.claude\skills"
@@ -233,7 +235,7 @@ TradingView phải chạy với debug port trước khi mở Claude Desktop.
 Mở **PowerShell as Administrator** (chuột phải → Run as administrator):
 ```powershell
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
-& "C:\Users\<TÊN_BẠN>\vn-trading-analyst\scripts\launch-tv-msix.ps1"
+& "C:\Users\<YOUR_USERNAME>\vn-trading-analyst\scripts\launch-tv-msix.ps1"
 ```
 
 Đợi đến khi thấy dòng:
@@ -244,7 +246,7 @@ DevTools listening on ws://127.0.0.1:9222/...
 
 **Windows — bản .exe trực tiếp:**
 ```
-C:\Users\<TÊN_BẠN>\vn-trading-analyst\scripts\launch_tv_debug.bat
+C:\Users\<YOUR_USERNAME>\vn-trading-analyst\scripts\launch_tv_debug.bat
 ```
 
 **macOS/Linux:**
@@ -356,7 +358,7 @@ Kiểm tra kết nối TradingView: dùng tv_health_check
 
 **❌ vnstock-mcp lỗi "command not found"**
 → `pip install vnstock-agent` chưa được thêm vào PATH.
-→ Thử: `python -m vnstock_agent.mcp` thay cho `vnstock-mcp`.
+→ Thử thay `"command": "vnstock-mcp"` thành `"command": "python"` và `"args": ["-m", "vnstock_agent.mcp"]` trong `claude_desktop_config.json`.
 
 **❌ Cài đặt Windows: "execution policy" error**
 → Chạy lệnh này trước: `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass`
@@ -397,7 +399,6 @@ vn-trading-analyst/
 - [thinh-vu/vnstock](https://github.com/thinh-vu/vnstock) — thư viện dữ liệu CK VN
 - [mrgoonie/vnstock-agent](https://github.com/mrgoonie/vnstock-agent) — MCP server vnstock
 - [tradesdontlie/tradingview-mcp](https://github.com/tradesdontlie/tradingview-mcp) — TradingView MCP
-- [zubair-trabzada/ai-trading-claude](https://github.com/zubair-trabzada/ai-trading-claude) — cảm hứng kiến trúc skills
 
 ---
 
