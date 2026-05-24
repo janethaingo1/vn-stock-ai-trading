@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
-# Setup script for vn-trading-analyst
+# Setup script for vn-stock-ai-trading
 # Installs vnstock-agent MCP + tradingview-mcp
 
 set -e
 
-echo "=== vn-trading-analyst Setup ==="
+echo "=== vn-stock-ai-trading Setup ==="
 echo ""
 
 # ── 1. Python / pip ───────────────────────────────────────────────────────────

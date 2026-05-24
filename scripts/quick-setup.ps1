@@ -76,7 +76,10 @@ if (-not $json.mcpServers) {
 }
 $tvPath = "$HOME\tradingview-mcp\src\server.js"
 $json.mcpServers | Add-Member -Name "tradingview" -Value ([PSCustomObject]@{command="node"; args=@($tvPath)}) -MemberType NoteProperty -Force
-$json.mcpServers | Add-Member -Name "vnstock" -Value ([PSCustomObject]@{command="vnstock-mcp"}) -MemberType NoteProperty -Force
+# Use 'python -m vnstock_agent.server' — works even if Python Scripts not in PATH
+$json.mcpServers | Add-Member -Name "vnstock" -Value ([PSCustomObject]@{
+    command="python"; args=@("-m","vnstock_agent.server")
+}) -MemberType NoteProperty -Force
 $json | ConvertTo-Json -Depth 10 | Set-Content $cfg -Encoding UTF8
 Write-Host "  OK: Added tradingview + vnstock to $cfg" -ForegroundColor Green
 

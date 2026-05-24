@@ -12,7 +12,7 @@ Kết hợp dữ liệu từ vn-analyze và xuất file HTML có thể mở trê
 1. Chạy toàn bộ phân tích như `/vn-analyze` để thu thập dữ liệu
 2. Chụp screenshot chart qua TradingView MCP
 3. Tạo file HTML standalone (nhúng tất cả CSS/JS inline)
-4. Lưu vào `~/vn-trading-analyst/reports/<SYMBOL>-<ngày>.html`
+4. Lưu vào `~/vn-stock-ai-trading/reports/<SYMBOL>-<ngày>.html`
 
 ## Cấu trúc báo cáo HTML
 

@@ -150,7 +150,8 @@ pip install ./vendor/vnstock-agent
 
 Kiểm tra:
 ```powershell
-vnstock-mcp --help   # phải hiển thị help text
+python -c "from vnstock_agent import server; print('vnstock-agent OK')"
+# Phải in ra: vnstock-agent OK
 ```
 
 **Lấy API key miễn phí (tuỳ chọn — không có vẫn dùng được ở Guest mode):**
@@ -203,7 +204,8 @@ Repo này có sẵn file `.mcp.json` → khi bạn `cd` vào repo và gõ `claud
       ]
     },
     "vnstock": {
-      "command": "vnstock-mcp",
+      "command": "python",
+      "args": ["-m", "vnstock_agent.server"],
       "env": {
         "VNSTOCK_API_KEY": "your_api_key_here"
       }
@@ -233,7 +235,7 @@ Clone repo này về máy (nếu chưa có):
 
 ```powershell
 git clone https://github.com/andyluu98/vn-stock-ai-trading.git
-cd vn-trading-analyst
+cd vn-stock-ai-trading
 ```
 
 **Copy skills vào Claude Code:**
@@ -272,7 +274,7 @@ TradingView phải chạy với debug port trước khi mở Claude Desktop.
 Mở **PowerShell as Administrator** (chuột phải → Run as administrator):
 ```powershell
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
-& "C:\Users\<YOUR_USERNAME>\vn-trading-analyst\scripts\launch-tv-msix.ps1"
+& "C:\Users\<YOUR_USERNAME>\vn-stock-ai-trading\scripts\launch-tv-msix.ps1"
 ```
 
 Đợi đến khi thấy dòng:
@@ -283,7 +285,7 @@ DevTools listening on ws://127.0.0.1:9222/...
 
 **Windows — bản .exe trực tiếp:**
 ```
-C:\Users\<YOUR_USERNAME>\vn-trading-analyst\scripts\launch_tv_debug.bat
+C:\Users\<YOUR_USERNAME>\vn-stock-ai-trading\scripts\launch_tv_debug.bat
 ```
 
 **macOS/Linux:**
@@ -393,9 +395,9 @@ Kiểm tra kết nối TradingView: dùng tv_health_check
 → Kiểm tra đã copy vào đúng thư mục `~/.claude/skills/` chưa.
 → Tắt hoàn toàn Claude Desktop (kể cả system tray) rồi mở lại.
 
-**❌ vnstock-mcp lỗi "command not found"**
+**❌ vnstock-mcp lỗi "command not found" / MCP không kết nối được**
 → Chạy lại từ thư mục repo: `pip install ./vendor/vnstock-agent`
-→ Thử thay `"command": "vnstock-mcp"` thành `"command": "python"` và `"args": ["-m", "vnstock_agent.mcp"]` trong `claude_desktop_config.json`.
+→ Config hiện tại đã dùng `"command": "python", "args": ["-m", "vnstock_agent.server"]` — không phụ thuộc PATH của Scripts dir.
 
 **❌ Cài đặt Windows: "execution policy" error**
 → Chạy lệnh này trước: `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass`
@@ -412,7 +414,7 @@ Kiểm tra kết nối TradingView: dùng tv_health_check
 ## Cấu trúc repo
 
 ```
-vn-trading-analyst/
+vn-stock-ai-trading/
 ├── .claude/
 │   └── skills/
 │       ├── vn-analyze/       # Flagship: phân tích toàn diện

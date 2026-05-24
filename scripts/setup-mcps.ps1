@@ -1,9 +1,9 @@
-# setup-mcps.ps1 — vn-trading-analyst setup for Windows
+# setup-mcps.ps1 — vn-stock-ai-trading setup for Windows
 # Run in PowerShell (no Admin required)
 
 $ErrorActionPreference = "Stop"
 
-Write-Host "=== vn-trading-analyst Setup (Windows) ===" -ForegroundColor Cyan
+Write-Host "=== vn-stock-ai-trading Setup (Windows) ===" -ForegroundColor Cyan
 Write-Host ""
 
 # 1. Python
@@ -75,7 +75,7 @@ Write-Host "  2. Open the config file and replace <YOUR_USERNAME> with: $usernam
 Write-Host "  3. (Optional) Add vnstock API key in the config" -ForegroundColor Gray
 Write-Host "  4. Launch TradingView (run as Admin):" -ForegroundColor Gray
 Write-Host "     Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass" -ForegroundColor DarkGray
-Write-Host "     & '$HOME\vn-trading-analyst\scripts\launch-tv-msix.ps1'" -ForegroundColor DarkGray
+Write-Host "     & '$HOME\vn-stock-ai-trading\scripts\launch-tv-msix.ps1'" -ForegroundColor DarkGray
 Write-Host "  5. Restart Claude Desktop completely (including system tray)" -ForegroundColor Gray
 Write-Host "  6. Try: /vn-market" -ForegroundColor Green
 Write-Host ""
