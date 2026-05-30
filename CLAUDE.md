@@ -9,7 +9,7 @@
 Bộ skills phân tích chứng khoán Việt Nam:
 - **TradingView MCP** — chart, giá realtime, indicator, vẽ trendline, alert
 - **vnstock MCP** — BCTC, P/E, ROE, bảng giá VN30, tin tức
-- **5 skills**: `/vn-analyze`, `/vn-technical`, `/vn-fundamental`, `/vn-market`, `/vn-report`
+- **6 skills**: `/vn-analyze`, `/vn-technical`, `/vn-fundamental`, `/vn-market`, `/vn-report`, `/vn-buffett`
 
 ## Hoạt động ở đâu
 
@@ -124,7 +124,7 @@ mkdir -p ~/.claude/skills
 cp -r "$REPO_ROOT/.claude/skills/"* ~/.claude/skills/
 ```
 
-Verify: `ls ~/.claude/skills/` phải thấy 5 thư mục `vn-analyze vn-technical vn-fundamental vn-market vn-report`.
+Verify: `ls ~/.claude/skills/` phải thấy 6 thư mục `vn-analyze vn-technical vn-fundamental vn-market vn-report vn-buffett`.
 
 ## Bước 6 — Cấu hình Claude Desktop config
 
@@ -212,7 +212,7 @@ Sau khi xong setup, tự verify và báo user dạng bảng:
 | Node | `node --version` | v18+ |
 | vnstock-mcp | `vnstock-mcp --help` | help text |
 | tradingview-mcp | `Test-Path "$HOME\tradingview-mcp\src\server.js"` | True |
-| Skills | `ls ~/.claude/skills/vn-*` | 5 thư mục |
+| Skills | `ls ~/.claude/skills/vn-*` | 6 thư mục |
 | `.mcp.json` repo | `Test-Path "<REPO>\.mcp.json"` | True |
 | Claude Desktop config | có entry `tradingview` + `vnstock` | OK |
 
@@ -240,12 +240,13 @@ vn-stock-ai-trading/
 ├── CLAUDE.md                    ← bạn đang đọc — auto-install instructions
 ├── README.md                    ← hướng dẫn cho human
 ├── .mcp.json                    ← MCP config cho Claude Code CLI (auto-loaded)
-├── .claude/skills/              ← 5 skills /vn-*
+├── .claude/skills/              ← 6 skills /vn-*
 │   ├── vn-analyze/
 │   ├── vn-technical/
 │   ├── vn-fundamental/
 │   ├── vn-market/
-│   └── vn-report/
+│   ├── vn-report/
+│   └── vn-buffett/              ← Warren Buffett value investing
 ├── vendor/
 │   └── vnstock-agent/           ← source vendored từ mrgoonie/vnstock-agent (MIT)
 ├── config/

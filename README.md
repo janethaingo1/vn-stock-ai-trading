@@ -327,6 +327,7 @@ Kiểm tra kết nối TradingView: dùng tv_health_check
 | Lệnh | Mô tả | Thời gian |
 |------|-------|-----------|
 | `/vn-analyze VCB` | 🏆 Phân tích toàn diện — Trade Score 0-100, kế hoạch giao dịch | ~2-3 phút |
+| `/vn-buffett VCB` | 🎩 Phân tích Warren Buffett — 12 nguyên tắc, Moat, Owner Earnings, Margin of Safety | ~2-3 phút |
 | `/vn-technical VCB` | 📈 Kỹ thuật nhanh — xu hướng, hỗ trợ/kháng cự, tín hiệu vào | ~30 giây |
 | `/vn-fundamental VCB` | 📋 Cơ bản sâu — BCTC, P/E, ROE, định giá nội tại | ~1 phút |
 | `/vn-market` | 🌐 Tổng quan thị trường — VN-Index, VN30, top tăng/giảm | ~30 giây |
@@ -418,6 +419,7 @@ vn-stock-ai-trading/
 ├── .claude/
 │   └── skills/
 │       ├── vn-analyze/       # Flagship: phân tích toàn diện
+│       ├── vn-buffett/       # 🎩 Warren Buffett value investing
 │       ├── vn-technical/     # Kỹ thuật via TradingView
 │       ├── vn-fundamental/   # Cơ bản via vnstock
 │       ├── vn-market/        # Tổng quan thị trường
