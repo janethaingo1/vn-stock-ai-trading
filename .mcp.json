@@ -9,6 +9,15 @@
     "vnstock": {
       "command": "python",
       "args": ["-m", "vnstock_agent.server"]
+    },
+    "obsidian": {
+      "command": "uvx",
+      "args": ["mcp-obsidian"],
+      "env": {
+        "OBSIDIAN_API_KEY": "${OBSIDIAN_API_KEY}",
+        "OBSIDIAN_HOST": "127.0.0.1",
+        "OBSIDIAN_PORT": "27123"
+      }
     }
   }
 }
