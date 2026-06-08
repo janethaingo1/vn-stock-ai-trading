@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VN Stock Dashboard — Buffett Analyzer</title>
+  <meta name="description" content="Vietnamese stock analysis dashboard with Warren Buffett value investing methodology">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <!-- Animated background -->
+  <div class="bg-grid"></div>
+  <div class="bg-glow bg-glow-1"></div>
+  <div class="bg-glow bg-glow-2"></div>
+
+  <!-- Sidebar -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <span class="brand-icon">🎩</span>
+      <h1 class="brand-text">VN Buffett</h1>
+    </div>
+    <ul class="nav-list">
+      <li class="nav-item active" data-view="dashboard">
+        <span class="nav-icon">📊</span>
+        <span class="nav-label">Dashboard</span>
+      </li>
+      <li class="nav-item" data-view="analyzer">
+        <span class="nav-icon">🔬</span>
+        <span class="nav-label">Analyzer</span>
+      </li>
+      <li class="nav-item" data-view="watchlist">
+        <span class="nav-icon">👁️</span>
+        <span class="nav-label">Watchlist</span>
+      </li>
+      <li class="nav-item" data-view="reports">
+        <span class="nav-icon">📄</span>
+        <span class="nav-label">Reports</span>
+      </li>
+    </ul>
+    <div class="sidebar-footer">
+      <div class="clock" id="clock"></div>
+      <div class="disclaimer">Research only • Not financial advice</div>
+    </div>
+  </nav>
+
+  <!-- Main content -->
+  <main class="main-content">
+    <!-- Header -->
+    <header class="top-bar">
+      <div class="breadcrumb" id="breadcrumb">Dashboard</div>
+      <div class="header-actions">
+        <div class="search-box">
+          <input type="text" id="globalSearch" placeholder="Nhập mã CK... (VCB, FPT)" autocomplete="off" spellcheck="false">
+          <kbd>↵</kbd>
+        </div>
+      </div>
+    </header>
+
+    <!-- Views -->
+    <div class="view active" id="view-dashboard">
+      <!-- Market Overview -->
+      <section class="section">
+        <h2 class="section-title">
+          <span class="section-icon">🌐</span> Thị trường
+          <span class="badge badge-live" id="marketStatus">Loading...</span>
+        </h2>
+        <div class="market-indices" id="marketIndices">
+          <div class="index-card skeleton" data-index="VNINDEX">
+            <div class="index-name">VN-Index</div>
+            <div class="index-value">---</div>
+            <div class="index-change">---</div>
+          </div>
+          <div class="index-card skeleton" data-index="VN30">
+            <div class="index-name">VN30</div>
+            <div class="index-value">---</div>
+            <div class="index-change">---</div>
+          </div>
+          <div class="index-card skeleton" data-index="HNX">
+            <div class="index-name">HNX</div>
+            <div class="index-value">---</div>
+            <div class="index-change">---</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Watchlist Quick Cards -->
+      <section class="section">
+        <h2 class="section-title">
+          <span class="section-icon">⭐</span> Watchlist nhanh
+        </h2>
+        <div class="stock-cards" id="dashboardWatchlist">
+          <div class="stock-card skeleton">Loading watchlist...</div>
+        </div>
+      </section>
+
+      <!-- Recent Reports -->
+      <section class="section">
+        <h2 class="section-title">
+          <span class="section-icon">📋</span> Báo cáo gần nhất
+        </h2>
+        <div class="reports-list" id="recentReports">
+          <div class="empty-state">Chưa có báo cáo. Chạy Analyzer để tạo báo cáo đầu tiên!</div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Analyzer View -->
+    <div class="view" id="view-analyzer">
+      <section class="section">
+        <h2 class="section-title">
+          <span class="section-icon">🔬</span> Buffett Analyzer
+        </h2>
+        <div class="analyzer-input-area">
+          <div class="analyzer-input-group">
+            <input type="text" id="analyzerTicker" placeholder="Nhập mã CK (VD: VCB)" autocomplete="off" spellcheck="false">
+            <button id="analyzerRun" class="btn btn-primary">
+              <span class="btn-text">Phân tích</span>
+              <span class="btn-loader" style="display:none"></span>
+            </button>
+          </div>
+          <div class="quick-tickers">
+            <span class="quick-label">Nhanh:</span>
+            <button class="chip" data-ticker="VCB">VCB</button>
+            <button class="chip" data-ticker="FPT">FPT</button>
+            <button class="chip" data-ticker="VNM">VNM</button>
+            <button class="chip" data-ticker="HPG">HPG</button>
+            <button class="chip" data-ticker="SAB">SAB</button>
+            <button class="chip" data-ticker="MWG">MWG</button>
+            <button class="chip" data-ticker="TCB">TCB</button>
+          </div>
+        </div>
+      </section>
+
+      <div id="analyzerResults" style="display:none">
+        <!-- Filled by JS -->
+      </div>
+    </div>
+
+    <!-- Watchlist View -->
+    <div class="view" id="view-watchlist">
+      <section class="section">
+        <h2 class="section-title">
+          <span class="section-icon">👁️</span> Watchlist
+          <button id="addWatchlistBtn" class="btn btn-sm btn-outline">+ Thêm mã</button>
+        </h2>
+        <div id="addWatchlistForm" class="add-form" style="display:none">
+          <input type="text" id="addWatchlistInput" placeholder="Nhập mã CK">
+          <button id="addWatchlistConfirm" class="btn btn-sm btn-primary">Thêm</button>
+          <button id="addWatchlistCancel" class="btn btn-sm btn-ghost">Hủy</button>
+        </div>
+        <div class="watchlist-table-wrapper">
+          <table class="watchlist-table" id="watchlistTable">
+            <thead>
+              <tr>
+                <th>Mã</th>
+                <th>Tên</th>
+                <th>Ngành</th>
+                <th>Giá</th>
+                <th>±</th>
+                <th>P/E</th>
+                <th>ROE</th>
+                <th>D/E</th>
+                <th>Hành động</th>
+              </tr>
+            </thead>
+            <tbody id="watchlistBody">
+              <tr><td colspan="9" class="empty-state">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <!-- Reports View -->
+    <div class="view" id="view-reports">
+      <section class="section">
+        <h2 class="section-title">
+          <span class="section-icon">📄</span> Lịch sử Báo cáo Buffett
+        </h2>
+        <div class="reports-grid" id="reportsGrid">
+          <div class="empty-state">Loading...</div>
+        </div>
+      </section>
+
+      <section class="section" id="reportViewer" style="display:none">
+        <h2 class="section-title">
+          <span class="section-icon">📖</span> <span id="reportViewerTitle">Report</span>
+          <button id="closeReport" class="btn btn-sm btn-ghost">✕ Đóng</button>
+        </h2>
+        <div class="report-content" id="reportContent"></div>
+      </section>
+    </div>
+  </main>
+
+  <!-- Toast container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

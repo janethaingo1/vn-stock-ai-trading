@@ -30,3 +30,6 @@ reports/
 .env
 .env.local
 *.key
+.venv/
+out/
+dashboard/watchlist.json
