@@ -130,8 +130,10 @@ async function loadWatchlistCards() {
       </div>
     `).join('');
 
-    // Load each card data
-    watchlist.forEach(t => loadStockCard(t));
+    // Load cards sequentially to avoid rate limits
+    for (const t of watchlist) {
+      await loadStockCard(t);
+    }
   } catch (e) {
     container.innerHTML = '<div class="empty-state">Không tải được watchlist</div>';
   }
@@ -373,7 +375,10 @@ async function loadWatchlistTable() {
       </tr>
     `).join('');
 
-    watchlist.forEach(t => loadWatchlistRow(t));
+    // Load rows sequentially to avoid rate limits
+    for (const t of watchlist) {
+      await loadWatchlistRow(t);
+    }
   } catch (e) {
     tbody.innerHTML = '<tr><td colspan="9" class="empty-state">Lỗi tải watchlist</td></tr>';
   }
